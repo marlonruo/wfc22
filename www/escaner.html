@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<!--
+
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="msapplication-tap-highlight" content="no" />
+
+<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+<!--<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />-->
+
+<meta name="viewport" content="user-scalable=no, target-densitydpi=device-dpi">
+<link rel="stylesheet" type="text/css" href="css/index.css" />
+<title>WFC 2015</title>
+<link href="css/estilos.css" rel="stylesheet" type="text/css">
+
+<script src="js/jquery-1.11.2.js"></script>
+<script type="text/javascript" src="js/jquery.form.js"></script>
+</head>
+
+<body style="min-width:750px" onLoad="iniciar()">
+
+<!--///////////INICIO///////////-->
+
+<div id="screem" style="opacity:0.0; display:none"> <img src="imagenes/fondo.jpg" width="100%" height="100%" alt="fondo" style="position:absolute"/>
+  <div class="plecas" style="top:0px;"> <img src="imagenes/plecas.png" style="height:100%; position:absolute"/> </div>
+  <div id="pleca_abajo" class="plecas" style="top:100%;"> <img src="imagenes/plecas.png" style="height:100%; position:absolute"/> </div>
+  <img id="logo" src="imagenes/logo.png"/> <img id="cargar" src="imagenes/cargar.png"/>
+  <div id="naranja"></div>
+  <div id="cargando" class="texto_carbon">CARGANDO</div>
+  <div id="nom3" class="texto_carbon" style="opacity:0.1">holas</div>
+</div>
+ 
+
+
+<!--///////////REGISTRO///////////-->
+
+<div id="registro" style="display:none;">
+
+  <div style="width:100%; height:100%; position:absolute"> <img src="imagenes/fondo4.jpg" width="100%" height="100%" alt="fondo" style="position:absolute"/>
+    
+    
+    <div id="mover" style="position:absolute; width:100%; height:100%;">
+    <div id="t_reg" class="texto_carbon">REGISTER</div>
+    <div id="t_ple" class="texto_helvetica" style="display:none">* Password does not match</div>
+    <img class="campo" src="imagenes/campo.png" style="top:22%"/>
+    <form name="forma_registro" id="forma_registro" method="post" action="http://marlonruo.com/wfc2015/phps/enviar.php">
+      <div class="caja" style="top: 22%;">
+        <input id="f_nombre" name="nombre" type="text" class="caja_campo" value="First name" onFocus="fborrar1()" onBlur="fchecar1()" tabindex="1">
+      </div>
+      <div class="caja" style="top: 30.6%;">
+        <input id="f_apellido" name="apellido" type="text" class="caja_campo" value="Last name" onFocus="fborrar2()" onBlur="fchecar2()" tabindex="2">
+      </div>
+      <div class="caja" style="top: 39.4%;">
+        <input id="f_telefono" name="telefono" type="text" class="caja_campo" value="Phone number" onFocus="fborrar3()" onBlur="fchecar3()" tabindex="3">
+      </div>
+      <div class="caja" style="top: 48.4%;">
+        <input id="f_email" name="correo" type="text" class="caja_campo" value="E-mail" onFocus="fborrar4()" onBlur="fchecar4()" tabindex="4">
+      </div>
+      
+      <input type="submit" id="bt_registro" style="cursor:pointer" value="" tabindex="7">
+    </form>
+    </div>
+    
+  </div>
+</div>
+
+<!--///////////EXITO///////////-->
+
+<div id="exito" style="opacity:0.0; display:none">
+  <div class="sponsor"></div>
+  <div style="width:100%; height:93%; position:absolute; top:7%"> <img src="imagenes/fondo4.jpg" width="100%" height="100%" alt="fondo" style="position:absolute"/>
+    <div id="t_exi" class="texto_carbon">YOUR REGISTRATION<br>
+      WAS SUCCESSFUL</div>
+    <div id="t_here" class="texto_helvetica">Here is your QR code that will<br>
+      give you acces to events.</div>
+    <iframe id="if_qr" style="position:absolute; width:254px; height:254px; border:none; background-color:#fff; top:50%; left:50%; margin-left:-125px; margin-top:-110px;" scrolling="no" frameborder="0"></iframe>
+    <iframe id="escribirtxt" style="position:absolute; width:10px; height:10px; border:none; background:none; top:0%; left:0%; margin-left:0px; margin-top:0px;" scrolling="no" frameborder="0"></iframe>
+    <img id="bt_start" src="imagenes/bt_start.png"/> </div>
+</div>
+<script>
+
+        $('#forma_registro').submit(function() {
+
+		
+
+		var email = document.getElementById("f_email").value
+
+		
+
+		if(document.getElementById("f_nombre").value == 'First name'){
+
+			$('#t_ple').fadeIn()
+
+			$('#t_ple').html('* Name required')
+
+      		return false;
+
+		}
+
+		if(document.getElementById("f_apellido").value == 'Last name'){
+
+			$('#t_ple').fadeIn()
+
+			$('#t_ple').html('* Last name required')
+
+      		return false;
+
+		}
+
+		
+
+		var filtro = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;	
+
+		if (!filtro.test(email)) {
+
+			$('#t_ple').fadeIn()
+
+			$('#t_ple').html('* Checks the e-mail')
+
+		   return false;
+
+		}
+
+		if(document.getElementById("f_pass").value != document.getElementById("f_pass2").value){
+
+			$('#t_ple').fadeIn()
+
+			$('#t_ple').html('* Password does not match')
+
+      		return false;
+
+		}
+
+		if(document.getElementById("f_telefono").value == 'Phone number'){
+
+			document.getElementById("f_telefono").value = ""
+
+		}
+
+        $.ajax({
+
+            type: 'POST',
+
+            url: $(this).attr('action'),
+
+            data: $(this).serialize(),
+
+            success: function(data) {
+
+				
+					localStorage.setItem("nombre", document.getElementById("f_nombre").value);
+					localStorage.setItem("apellido", document.getElementById("f_apellido").value);
+					localStorage.setItem("email", document.getElementById("f_email").value);
+					localStorage.setItem("telefono", document.getElementById("f_telefono").value);
+
+					window.location.href = '#exito'
+
+					$('#exito').fadeIn(400)
+
+					$('#registro').fadeOut(400)
+
+					ini_exi()
+
+				
+					document.getElementById('if_qr').src = "http://marlonruo.com/wfc2015/qr.php?datos=<b>"+document.getElementById("f_nombre").value+" "+document.getElementById("f_apellido").value+"</b><br> Phone: <a href='tel:"+document.getElementById("f_telefono").value+"'>"+document.getElementById("f_telefono").value+"</a><br> Mail: <a href='mailto:"+document.getElementById("f_email").value+"'>"+document.getElementById("f_email").value+"</a>"
+					
+
+
+					allText = "<b>"+document.getElementById("f_nombre").value+" "+document.getElementById("f_apellido").value+"</b><br> Phone: <a href='tel:"+document.getElementById("f_telefono").value+"'>"+document.getElementById("f_telefono").value+"</a><br> Mail: <a href='mailto:"+document.getElementById("f_email").value+"'>"+document.getElementById("f_email").value+"</a>"
+                	
+
+					//$('#respuesta').html(data);
+
+					//var id_us = document.getElementById("respuesta").innerHTML
+
+            }
+
+        })
+
+        return false;
+
+    }); 
+
+        
+
+        function fborrar1(){
+			$('#mover').stop().animate({top:'0%'}, 800);
+			if(document.getElementById('f_nombre').value=='First name'){
+
+				document.getElementById('f_nombre').value=''
+				
+
+			}
+
+		}
+
+		function fchecar1(){
+			$('#mover').stop().animate({top:'0%'}, 800);
+			if(document.getElementById('f_nombre').value==''){
+
+				document.getElementById('f_nombre').value='First name'
+				
+				
+			}
+
+		}
+
+		function fborrar2(){
+			$('#mover').stop().animate({top:'-8.5%'}, 800);
+			if(document.getElementById('f_apellido').value=='Last name'){
+
+				document.getElementById('f_apellido').value=''
+				
+
+			}
+
+		}
+
+		function fchecar2(){
+			$('#mover').stop().animate({top:'0%'}, 800);
+			if(document.getElementById('f_apellido').value==''){
+
+				document.getElementById('f_apellido').value='Last name'
+
+			}
+
+		}
+
+		function fborrar3(){
+			$('#mover').stop().animate({top:'-17%'}, 800);
+			if(document.getElementById('f_telefono').value=='Phone number'){
+
+				document.getElementById('f_telefono').value=''
+
+			}
+
+		}
+
+		function fchecar3(){
+			$('#mover').stop().animate({top:'0%'}, 800);
+			if(document.getElementById('f_telefono').value==''){
+
+				document.getElementById('f_telefono').value='Phone number'
+
+			}
+
+		}
+
+		function fborrar4(){
+			$('#mover').stop().animate({top:'-25.5%'}, 800);
+			if(document.getElementById('f_email').value=='E-mail'){
+
+				document.getElementById('f_email').value=''
+
+			}
+
+		}
+
+		function fchecar4(){
+			$('#mover').stop().animate({top:'0%'}, 800);
+			if(document.getElementById('f_email').value==''){
+
+				document.getElementById('f_email').value='E-mail'
+
+			}
+
+		}
+
+		
+        </script> 
+
+
+
+
+
+<!--------------------QR SCAN------------------>
+
+<div id="scan" style="opacity:0.0; display:none">
+  <div class="sponsor"></div>
+  <div style="width:100%; height:93%; position:absolute; top:7%">
+    <div class="contenido">
+      <div class="titulo_horarios2">
+        <div class="texto_carbon titulo_horarios2f">QR CODES</div>
+        <div class="texto_neo fecha_horarios2f">Scan codes</div>
+        <img class="atr_qr" src="imagenes/atras.png" height="30%" style="position:absolute; left:30%; top:35%"/> </div>
+      <div class="myqr">  </div>
+      <span id="resultado" style="position:absolute; left:30%; top:40%; font-size:1.3rem; text-align:left; color: #014c64;" class="texto_neo"><b>Marlon Ruiz</b><br>Phone: <a href="tel:58229774">58229774</a><br>Email: <a href="mailto:marlon_ru@hotmail.com">marlon_ru@hotmail.com</a></span>
+      <a onclick="scanear();" href="#scan"><span style="position:absolute; left:30%; top:61%; font-size:2rem; text-align:left; color: #014c64;" class="texto_carbon">Scan Code</span></a>
+      </div>
+    <div class="menu" style="max-width:140px;">
+      <div class="seleccionado" style="top:60%"></div>
+      <div id="botones_menu1" class="botones_menu bt_menu1"></div>
+      <div id="botones_menu2" class="botones_menu bt_menu2"></div>
+      <div id="botones_menu3" class="botones_menu bt_menu3"></div>
+      <div id="botones_menu4" class="botones_menu bt_menu4"></div>
+      <div id="botones_menu5" class="botones_menu bt_menu5"></div>
+      <div style="position:relative; float:left; width:80%; left:10%; height:4px; background-color:#FFFFFF"></div>
+      <div id="botones_menu6" class="botones_menu bt_menu6"></div>
+      <div id="botones_menu7" class="botones_menu bt_menu7"></div>
+      <div style="position:relative; float:left; width:80%; left:10%; height:4px; background-color:#FFFFFF"></div>
+      <div id="botones_menu8" class="botones_menu bt_menu8"></div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>	
+
+		var ancho_logo
+		var ancho_logo2
+		var alto_pleca
+		var alto_cargando
+		var ancho_logo_texto
+		var ancho_logo_texto2
+		var alto_text_bt
+		var pollo = 1
+		var pagina = window.location.hash
+		var pagina2 = window.location.hash
+
+		
+
+
+
+		function cambio(){
+			pagina2 = window.location.hash
+			if(pagina2 != pagina){
+				pagina = window.location.hash
+				iniciar()
+			}
+		}
+		var t = setInterval(cambio,200);
+
+		
+
+		function iniciar(){
+			if(pagina==""){
+				$('#screem').fadeIn(400)
+				$('#registro').fadeOut(400)
+				$('#exito').fadeOut(400)
+				$('#scan').fadeOut(400)
+				ini_scr()
+			}else if(pagina=="#registro"){
+				$('#screem').fadeOut(400)
+				$('#registro').fadeIn(400)
+				$('#exito').fadeOut(400)
+				$('#scan').fadeOut(400)
+				ini_reg()
+
+			}else if(pagina=="#exito"){
+				$('#screem').fadeOut(400)
+				$('#registro').fadeOut(400)
+				$('#exito').fadeIn(400)
+				$('#scan').fadeOut(400)
+				ini_exi()
+			}else if(pagina=="#scan"){
+				$('#screem').fadeOut(400)
+				$('#registro').fadeOut(400)
+				$('#exito').fadeOut(400)
+				$('#scan').fadeIn(400)
+				ini_sca()
+			}
+		};
+
+		
+
+		
+
+		var allText = ""
+		var nombre = ""
+
+		function ini_scr(){
+
+				pollo=1				
+				$('#screem').stop().animate({opacity: '1'}, 800);
+				ancho_logo = $( "#logo" ).width()
+				ancho_logo2 = ancho_logo/2
+				$('#cargar').css('width',ancho_logo+'px')
+				$('#logo, #cargar').css('margin-left', -ancho_logo2+'px')
+				$('#naranja').css('width', '0px')
+				$('#naranja').css('margin-left', -(ancho_logo2-15)+'px')
+				$('#naranja').css('margin-top', ($("#cargar").height()/2)-1+'px')
+				$('#naranja').animate({width: (ancho_logo-30)+'px'}, 3000);
+				alto_pleca = $( "#pleca_abajo" ).height()
+				$('#pleca_abajo').css('margin-top', -alto_pleca+'px')
+				alto_cargando = $( "#cargando" ).height()
+				$('#cargando').css('font-size', alto_cargando+'px')
+
+
+				setTimeout("$('#screen').fadeOut()", 3000)
+				
+				
+				setTimeout("window.location.href = '#registro'", 3000);
+				setTimeout("$('#registro').fadeIn()", 3000)	
+				setTimeout("ini_reg()", 3000)	
+		}
+
+
+		function ini_reg(){
+				pollo=1
+				$('#registro').animate({opacity: '1'}, 800);
+				$('.campo').css('margin-left', -($(".campo").width()/2)+'px')
+
+				$('#t_reg').css('font-size', ($("#t_reg").height()/2)+'px')
+				$('#t_ple').css('font-size', ($("#t_ple").height()/2)+'px')
+
+				$('.caja').css('width',$('.campo').width()+'px');
+				$('.caja').css('margin-left',-($('.campo').width()/2)+'px');
+				$('#bt_registro').css('width',$('.campo').width()+'px');
+				$('#bt_registro').css('margin-left', -($("#bt_registro").width()/2)+'px')
+		}
+
+		
+
+		function ini_exi(){
+			pollo=1
+				$('#exito').animate({opacity: '1'}, 800);
+				$('#c_qr').css('margin-left', -($("#c_qr").width()/2)+'px')
+				$('#bt_start').css('margin-left', -($("#bt_start").width()/2)+'px')
+				$('#t_exi').css('font-size', ($("#t_exi").height()/2)+'px')
+				$('#t_here').css('font-size', ($("#t_here").height()/2)+'px')
+		}
+
+
+
+		function ini_sca(){
+			pollo=1
+				$('#scan').stop().animate({opacity: '1'}, 800);
+				$('.titulo_horarios2f').css('font-size', $(".titulo_horarios2f").height()+'px')
+				$('.fecha_horarios2f').css('font-size', $(".fecha_horarios2f").height()+'px')	
+		}
+
+		
+		$("#cancelar").click(function(){
+		  window.location.href = '#log'
+		  $('#login').fadeIn(400)
+		  $('#registro').fadeOut(400)
+		  ini_log()
+	    });
+		
+
+
+		/*$("#bt_scan").click(function(){
+		  window.location.href = '#scan'
+		  $('#qr').fadeOut(400)
+		  $('#scan').fadeIn(400)
+		  ini_sca()
+	    });*/
+
+
+		$("#boton_registro").click(function(){
+		  window.location.href = '#registro'
+		  $('#login').fadeOut(400)
+		  $('#registro').fadeIn(400)
+		  ini_reg()
+	    });
+
+		$("#bt_start").click(function(){
+		  window.location.href = '#home'
+		  $('#exito').fadeOut(400)
+		  $('#home').fadeIn(400)
+		  ini_hom()
+	    });
+
+
+		$(function() {
+			var $window = $(window);
+			var width = $window.width();
+			var height = $window.height();
+
+			setInterval(function () {
+				if ((width != $window.width()) || (height != $window.height())) {
+					if(pollo==1){
+						$('#screem').stop().animate({opacity: '0.0'}, 0);
+						width = $window.width();
+						height = $window.height();
+						setTimeout("iniciar()", 300);
+						pollo=0
+					}
+				}
+			}, 10);
+		});
+		window.plugin.statusbarOverlay.hide();
+		
+</script> 
+<script type="text/javascript" src="cordova.js"></script> 
+<script type="text/javascript" src="js/app.js"></script> 
+<script type="text/javascript" src="js/index.js"></script> 
+<script type="text/javascript">
+            app.initialize();
+        </script>
+</body>
+</html>
